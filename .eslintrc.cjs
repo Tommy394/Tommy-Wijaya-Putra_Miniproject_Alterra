@@ -18,5 +18,13 @@ module.exports = {
 		},
 	},
 	plugins: ["react", "react-hooks"],
-	rules: { "react/prop-types": "off" },
+	rules: {
+		"react/prop-types": "off",
+		"react-hooks/exhaustive-deps": [
+			"warn",
+			{
+				additionalHooks: "(useRecoilCallback|useRecoilTransaction_UNSTABLE)",
+			},
+		],
+	},
 };

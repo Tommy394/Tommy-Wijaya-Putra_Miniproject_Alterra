@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import supabase from "../../utils/client";
 
@@ -21,6 +21,9 @@ const Main = () => {
 			>
 				Log Out
 			</Button>
+			<Link to="quiz-form">
+				<Button>Add Quiz</Button>
+			</Link>
 		</div>
 	);
 };

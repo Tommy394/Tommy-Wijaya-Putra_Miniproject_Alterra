@@ -5,12 +5,16 @@ import {
 	RouterProvider,
 	redirect,
 } from "react-router-dom";
+import { RecoilRoot } from "recoil";
 
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
 import Main from "./pages/main/Main";
+import InputForm from "./components/InputForm";
+import QuestionList from "./components/QuestionList";
 import { AuthProvider } from "./utils/auth";
 import supabase from "./utils/client";
+import "./style.css";
 
 const router = createBrowserRouter([
 	// {
@@ -48,12 +52,26 @@ const router = createBrowserRouter([
 		path: "registration",
 		element: <Registration />,
 	},
+	{
+		path: "quiz-form/",
+		element: <InputForm />,
+	},
+	{
+		path: "question-list",
+		element: <QuestionList />,
+	},
+	{
+		path: "question-list/:id",
+		element: <QuestionList />,
+	},
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>
-		<AuthProvider supabase={supabase}>
-			<RouterProvider router={router} />
-		</AuthProvider>
+		<RecoilRoot>
+			<AuthProvider supabase={supabase}>
+				<RouterProvider router={router} />
+			</AuthProvider>
+		</RecoilRoot>
 	</React.StrictMode>
 );

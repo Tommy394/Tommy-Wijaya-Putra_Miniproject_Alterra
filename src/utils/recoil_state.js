@@ -20,3 +20,8 @@ export const quizzesAtom = atom({
 	default: [],
 	effects: [localStorageEffect("Quizzes")],
 });
+
+export const isFormEditingAtom = atom({
+	key: "isFormEditing",
+	default: false,
+});

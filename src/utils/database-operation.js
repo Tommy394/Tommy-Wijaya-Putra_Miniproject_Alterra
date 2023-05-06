@@ -1,43 +1,50 @@
 import supabase from "./client";
+import { v4 as uuidv4 } from "uuid";
 
-export const insertQuizzes = async (userId) => {
-	const { data: quizzes, error: quizzesError } = await supabase
+export const insertQuizzes = async (userId, name) => {
+	const { data: quizData, error: quizDataError } = await supabase
 		.from("quizzes")
-		.insert([{ host_id: userId }])
+		.insert([{ host_id: userId, name }])
 		.select()
 		.single();
 
-	return { quizzes, quizzesError };
+	return { quizData, quizDataError };
 };
 
-export const insertQuestions = async (quizId, content, imagePath) => {
+export const insertQuestions = async (questionArr) => {
 	const { data: questions, error: questionsError } = await supabase
 		.from("questions")
-		.insert([{ content, quiz_id: quizId, image: imagePath }])
+		.insert(questionArr)
 		.select();
+
+	if (questionsError) {
+		console.log(questionsError);
+	}
 
 	return { questions, questionsError };
 };
 
-export const insertOptions = async (questionId, arr) => {
-	const options = arr.map((element) => {
-		return { ...element, question_id: questionId };
-	});
-
-	console.log(options);
-
+export const insertOptions = async (optionsArr) => {
 	const { data: option, error: optionError } = await supabase
 		.from("options")
-		.insert(options)
+		.insert(optionsArr)
 		.select();
+
+	if (optionError) {
+		console.log(optionError);
+	}
 
 	return { option, optionError };
 };
 
-export const uploadImage = async (file) => {
+export const uploadImage = async (base64) => {
+	if (!base64) {
+		return { image: null, imageError: null };
+	}
+
 	const { data: image, error: imageError } = await supabase.storage
 		.from("image")
-		.upload(`image/${file.name}`, file, {
+		.upload(`image/${uuidv4()}`, base64, {
 			cacheControl: "3600",
 			upsert: true,
 		});

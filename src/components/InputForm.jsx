@@ -1,79 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useRecoilValue } from "recoil";
+import { useLocation, useNavigate } from "react-router";
+import { useRecoilState } from "recoil";
 
 import QuestionTextBox from "./QuestionTextBox";
 import Options from "./Options";
 import OptionTextBox from "./OptionTextBox";
 import AddQuestionButton from "./AddQuestionButton";
 import FileInput from "./FileInput";
-import { useAuth } from "../utils/auth";
-import {
-	insertQuestions,
-	insertOptions,
-	insertQuizzes,
-	uploadImage,
-} from "../utils/database-operation";
-import { useParams } from "react-router";
+import { toBase64, getId } from "../utils/helpers";
 import { quizzesAtom } from "../utils/recoil_state";
 
 const InputForm = () => {
-	const { index } = useParams;
-	const quizzes = useRecoilValue(quizzesAtom);
-	console.log("render");
+	const location = useLocation();
+	const navigate = useNavigate();
+	const [quizzes, setQuizzes] = useRecoilState(quizzesAtom);
 
-	if (index) {
-		console.log(quizzes[index]);
+	let initialFormValue = {
+		question: "",
+		image: null,
+		options: Array(4).fill({ content: "", is_correct: false }),
+	};
+
+	if (location.state) {
+		initialFormValue = location.state.quiz;
 	}
 
-	const { register, handleSubmit, control, setValue, watch, reset, getValues } =
+	const { register, handleSubmit, control, setValue, reset, getValues } =
 		useForm({
-			defaultValues: {
-				question: "",
-				image: null,
-				options: Array(4).fill({ content: "", is_correct: false }),
-			},
+			defaultValues: initialFormValue,
 		});
 	const { fields, append, remove } = useFieldArray({
 		name: "options",
 		control,
 	});
-	const { user } = useAuth();
 
 	const onSubmit = async (data) => {
-		console.log(data);
+		if (data.image instanceof File) {
+			data.image = await toBase64(data.image);
+		}
 
-		const { quizzes, quizzesError } = await insertQuizzes(user.id);
+		if (location.state) {
+			setQuizzes((prev) => {
+				const newQuizzes = [...prev];
+				newQuizzes[location.state.index] = data;
+				return newQuizzes;
+			});
 
-		const { image, imageError } = await uploadImage(data.image);
+			navigate("/question-list");
+		} else {
+			setQuizzes((prev) => [...prev, { ...data, id: getId() }]);
 
-		const { questions, questionsError } = await insertQuestions(
-			quizzes.id,
-			data.question,
-			image.path
-		);
-
-		const { option, optionError } = await insertOptions(
-			questions[0].id,
-			data.options
-		);
-
-		if (optionError) {
-			console.log(optionError);
+			navigate("/question-list");
 		}
 	};
 
 	return (
 		<Form onSubmit={handleSubmit(onSubmit)}>
-			<AddQuestionButton
+			{/* <AddQuestionButton
 				reset={reset}
-				type="button"
+				type="submit"
 				getValues={getValues}
+				location={location}
 			>
-				Add Question
-			</AddQuestionButton>
+				Save
+			</AddQuestionButton> */}
 			<QuestionTextBox register={register} />
 			<FileInput
 				register={register}
@@ -88,7 +81,6 @@ const InputForm = () => {
 						register={register}
 						remove={remove}
 						control={control}
-						watch={watch}
 						setValue={setValue}
 					/>
 				))}
@@ -103,7 +95,7 @@ const InputForm = () => {
 				variant="primary"
 				type="submit"
 			>
-				Submit
+				Save
 			</Button>
 		</Form>
 	);

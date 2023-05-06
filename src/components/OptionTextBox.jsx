@@ -26,6 +26,7 @@ const OptionTextBox = ({ register, index, remove, control, setValue }) => {
 					<InputGroup.Checkbox
 						className="is-correct"
 						aria-label="Radio button for following text input"
+						checked={field.value}
 						{...field}
 						onChange={(e) => {
 							field.onChange(e);

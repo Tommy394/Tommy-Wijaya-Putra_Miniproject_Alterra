@@ -2,12 +2,30 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router";
+import { useSetRecoilState } from "recoil";
 
-const QuizListItem = ({ quiz, index }) => {
+import { isFormEditingAtom } from "../utils/recoil_state";
+import { quizzesAtom } from "../utils/recoil_state";
+
+const QuestionListItem = ({ quiz, index }) => {
 	const navigate = useNavigate();
+	const setIsFormEditing = useSetRecoilState(isFormEditingAtom);
+	const setQuizzes = useSetRecoilState(quizzesAtom);
 
 	const handleEdit = () => {
-		navigate(`/quiz-form/${index}`);
+		setIsFormEditing(true);
+
+		navigate(`/quiz-form/`, { state: { quiz, index } });
+	};
+
+	const handleDelete = () => {
+		if (window.confirm("Are you sure you want to delete this question?")) {
+			setQuizzes((prev) => {
+				const newQuizzes = [...prev];
+				newQuizzes.splice(index, 1);
+				return newQuizzes;
+			});
+		}
 	};
 
 	return (
@@ -43,10 +61,15 @@ const QuizListItem = ({ quiz, index }) => {
 				>
 					Edit
 				</Button>
-				<Button variant="danger">Delete</Button>
+				<Button
+					variant="danger"
+					onClick={handleDelete}
+				>
+					Delete
+				</Button>
 			</Card.Body>
 		</Card>
 	);
 };
 
-export default QuizListItem;
+export default QuestionListItem;

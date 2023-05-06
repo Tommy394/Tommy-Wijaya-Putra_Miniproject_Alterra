@@ -11,7 +11,7 @@ import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
 import Main from "./pages/main/Main";
 import InputForm from "./components/InputForm";
-import QuizList from "./components/QuizList";
+import QuestionList from "./components/QuestionList";
 import { AuthProvider } from "./utils/auth";
 import supabase from "./utils/client";
 import "./style.css";
@@ -57,16 +57,12 @@ const router = createBrowserRouter([
 		element: <InputForm />,
 	},
 	{
-		path: "quiz-form/:index",
-		element: <InputForm />,
+		path: "question-list",
+		element: <QuestionList />,
 	},
 	{
-		path: "quiz-list",
-		element: <QuizList />,
-	},
-	{
-		path: "quiz-list/:id",
-		element: <QuizList />,
+		path: "question-list/:id",
+		element: <QuestionList />,
 	},
 ]);
 

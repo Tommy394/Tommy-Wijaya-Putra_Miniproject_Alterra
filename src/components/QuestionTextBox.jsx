@@ -2,7 +2,6 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 
 const QuestionTextBox = ({ register }) => {
-	console.log("render");
 	return (
 		<Form.Group
 			className="mb-3"

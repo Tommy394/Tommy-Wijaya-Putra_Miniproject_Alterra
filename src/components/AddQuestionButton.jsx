@@ -1,32 +1,35 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button } from "react-bootstrap";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
-import { quizzesAtom } from "../utils/recoil_state";
+import { isFormEditingAtom, quizzesAtom } from "../utils/recoil_state";
 import { useNavigate } from "react-router";
+import { toBase64, getId } from "../utils/helpers";
 
-const AddQuestionButton = ({ reset, getValues, ...props }) => {
+const AddQuestionButton = ({ reset, getValues, location, ...props }) => {
 	const setQuizzes = useSetRecoilState(quizzesAtom);
 	const navigate = useNavigate();
-
-	const toBase64 = (file) =>
-		new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onload = () => resolve(reader.result);
-			reader.onerror = (error) => reject(error);
-		});
 
 	const handleAddQuestion = async () => {
 		const formData = getValues();
 
-		if (formData.image) {
+		if (formData.image instanceof File) {
 			formData.image = await toBase64(formData.image);
 		}
 
-		setQuizzes((prev) => [...prev, { ...formData, id: prev.length + 1 }]);
+		if (location.state) {
+			setQuizzes((prev) => {
+				const newQuizzes = [...prev];
+				newQuizzes[location.state.index] = formData;
+				return newQuizzes;
+			});
 
-		navigate("/quiz-list");
+			navigate("/question-list");
+		} else {
+			setQuizzes((prev) => [...prev, { ...formData, id: getId() }]);
+
+			navigate("/question-list");
+		}
 	};
 
 	return (

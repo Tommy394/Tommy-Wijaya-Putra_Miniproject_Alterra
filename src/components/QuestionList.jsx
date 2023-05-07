@@ -21,7 +21,7 @@ import { toBase64 } from "../utils/helpers";
 
 const QuestionList = () => {
 	const { id } = useParams();
-	const isEditingQuiz = useRecoilValue(isEditingQuizAtom);
+	const [isEditingQuiz, setIsEditingQuiz] = useRecoilState(isEditingQuizAtom);
 	const location = useLocation();
 	const [questionsState, setQuestions] = useRecoilState(questionsAtom);
 	const navigate = useNavigate();
@@ -29,6 +29,8 @@ const QuestionList = () => {
 	const [show, setShow] = useState(false);
 	const { register, handleSubmit, setValue } = useForm();
 	const refetch = useRefectQuizzes();
+
+	console.log("render");
 
 	const renameObjectKey = (o, oldKey, newKey) => {
 		if (oldKey !== newKey) {
@@ -119,6 +121,7 @@ const QuestionList = () => {
 		console.log(options);
 
 		setQuestions([]);
+		setIsEditingQuiz(false);
 		navigate("/");
 		refetch();
 	};

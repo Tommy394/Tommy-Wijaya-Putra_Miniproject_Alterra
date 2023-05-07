@@ -45,6 +45,19 @@ export const insertOptions = async (optionsArr) => {
 	return { option, optionError };
 };
 
+export const deleteQuizById = async (quizId) => {
+	const { error: deleteError } = await supabase
+		.from("quizzes")
+		.delete()
+		.eq("id", quizId);
+
+	if (deleteError) {
+		console.log(deleteError);
+	}
+
+	return { deleteError };
+};
+
 export const uploadImage = async (base64) => {
 	if (!base64) {
 		return { image: null, imageError: null };

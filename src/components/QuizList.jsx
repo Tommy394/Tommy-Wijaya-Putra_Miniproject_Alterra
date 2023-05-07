@@ -7,7 +7,6 @@ import { quizzesSelector } from "../utils/recoil_state";
 
 const QuizList = ({ userId }) => {
 	const { quizzes } = useRecoilValue(quizzesSelector(userId));
-	console.log(quizzes);
 
 	return (
 		<div>

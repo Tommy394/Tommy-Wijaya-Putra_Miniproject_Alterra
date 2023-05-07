@@ -42,3 +42,13 @@ export const quizzesSelector = selectorFamily({
 			return { quizzes, quizzesError };
 		},
 });
+
+export const isEditingQuestionAtom = atom({
+	key: "isEditingQuestion",
+	default: false,
+});
+
+export const isEditingQuizAtom = atom({
+	key: "isEditingQuiz",
+	default: false,
+});

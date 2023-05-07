@@ -2,19 +2,22 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router";
-import { useSetRecoilState } from "recoil";
+import { useNavigate } from "react-router";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import QuestionTextBox from "./QuestionTextBox";
 import Options from "./Options";
 import OptionTextBox from "./OptionTextBox";
 import FileInput from "./FileInput";
 import { toBase64, getId } from "../utils/helpers";
-import { questionsAtom } from "../utils/recoil_state";
+import { v4 as uuidv4 } from "uuid";
+import { isEditingQuestionAtom, questionsAtom } from "../utils/recoil_state";
 
-const InputForm = () => {
-	const location = useLocation();
+const InputForm = ({ quiz, index, handleClose }) => {
+	// const location = useLocation();
+	// const { id } = useParams();
 	const navigate = useNavigate();
+	const isEditingQuestion = useRecoilValue(isEditingQuestionAtom);
 	const setQuestions = useSetRecoilState(questionsAtom);
 
 	let initialFormValue = {
@@ -23,8 +26,8 @@ const InputForm = () => {
 		options: Array(4).fill({ content: "", is_correct: false }),
 	};
 
-	if (location.state) {
-		initialFormValue = location.state.quiz;
+	if (isEditingQuestion) {
+		initialFormValue = quiz;
 	}
 
 	const { register, handleSubmit, control, setValue } = useForm({
@@ -40,18 +43,19 @@ const InputForm = () => {
 			data.image = await toBase64(data.image);
 		}
 
-		if (location.state) {
+		if (isEditingQuestion) {
 			setQuestions((prev) => {
 				const newQuizzes = [...prev];
-				newQuizzes[location.state.index] = data;
+				newQuizzes[index] = data;
 				return newQuizzes;
 			});
 
-			navigate("/question-list");
+			handleClose();
 		} else {
-			setQuestions((prev) => [...prev, { ...data, id: getId() }]);
+			setQuestions((prev) => [...prev, { ...data, id: uuidv4() }]);
 
-			navigate("/question-list");
+			handleClose();
+			navigate("question-list");
 		}
 	};
 

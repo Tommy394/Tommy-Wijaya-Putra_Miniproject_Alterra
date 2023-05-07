@@ -1,11 +1,12 @@
 import supabase from "./client";
 import { v4 as uuidv4 } from "uuid";
 import { nanoid } from "nanoid";
+import { decode } from "base64-arraybuffer";
 
-export const insertQuizzes = async (userId, name) => {
+export const insertQuizzes = async (userId, name, id = null) => {
 	const { data: quizData, error: quizDataError } = await supabase
 		.from("quizzes")
-		.insert([{ host_id: userId, name, id: nanoid(6) }])
+		.upsert([{ host_id: userId, name, id: id ? id : nanoid(6) }])
 		.select()
 		.single();
 
@@ -15,7 +16,7 @@ export const insertQuizzes = async (userId, name) => {
 export const insertQuestions = async (questionArr) => {
 	const { data: questions, error: questionsError } = await supabase
 		.from("questions")
-		.insert(questionArr)
+		.upsert(questionArr)
 		.select();
 
 	if (questionsError) {
@@ -26,9 +27,15 @@ export const insertQuestions = async (questionArr) => {
 };
 
 export const insertOptions = async (optionsArr) => {
+	optionsArr.forEach((option) => {
+		if (!option.id) {
+			option.id = uuidv4();
+		}
+	});
+
 	const { data: option, error: optionError } = await supabase
 		.from("options")
-		.insert(optionsArr)
+		.upsert(optionsArr)
 		.select();
 
 	if (optionError) {
@@ -43,9 +50,15 @@ export const uploadImage = async (base64) => {
 		return { image: null, imageError: null };
 	}
 
+	const encodedString = base64.replace(
+		/^data:image\/(png|jpeg|jpg);base64,/,
+		""
+	);
+
 	const { data: image, error: imageError } = await supabase.storage
 		.from("image")
-		.upload(`image/${uuidv4()}`, base64, {
+		.upload(`image/${uuidv4()}.png`, decode(encodedString), {
+			contentType: "image/png",
 			cacheControl: "3600",
 			upsert: true,
 		});
@@ -55,6 +68,22 @@ export const uploadImage = async (base64) => {
 	}
 
 	return { image, imageError };
+};
+
+export const selectQuizById = async (quizId) => {
+	const { data: quiz, error: quizError } = await supabase
+		.from("quizzes")
+		.select(
+			"name, questions(content, id, image, options(content, is_correct, id))"
+		)
+		.eq("id", quizId)
+		.single();
+
+	if (quizError) {
+		console.log(quizError);
+	}
+
+	return { quiz, quizError };
 };
 
 export const selectQuizzesByUserId = async (userId) => {
@@ -68,4 +97,29 @@ export const selectQuizzesByUserId = async (userId) => {
 	}
 
 	return { quizzes, quizzesError };
+};
+
+export const selectQuestionsAndOptionsByQuizId = async (quizId) => {
+	const { data: questions, error: questionsError } = await supabase
+		.from("questions")
+		.select("*, options(*)")
+		.eq("quiz_id", quizId);
+
+	if (questionsError) {
+		console.log(questionsError);
+	}
+
+	return { questions, questionsError };
+};
+
+export const downloadImage = async (path) => {
+	const { data: image, error: imageError } = await supabase.storage
+		.from("image")
+		.download(path);
+
+	if (imageError) {
+		console.log(imageError);
+	}
+
+	return { image, imageError };
 };

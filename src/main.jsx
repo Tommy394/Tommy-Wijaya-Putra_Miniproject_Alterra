@@ -57,6 +57,10 @@ const router = createBrowserRouter([
 		element: <InputForm />,
 	},
 	{
+		path: "quiz-form/:id",
+		element: <InputForm />,
+	},
+	{
 		path: "question-list",
 		element: <QuestionList />,
 	},

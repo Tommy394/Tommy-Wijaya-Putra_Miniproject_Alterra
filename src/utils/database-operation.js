@@ -1,10 +1,11 @@
 import supabase from "./client";
 import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 
 export const insertQuizzes = async (userId, name) => {
 	const { data: quizData, error: quizDataError } = await supabase
 		.from("quizzes")
-		.insert([{ host_id: userId, name }])
+		.insert([{ host_id: userId, name, id: nanoid(6) }])
 		.select()
 		.single();
 
@@ -54,4 +55,17 @@ export const uploadImage = async (base64) => {
 	}
 
 	return { image, imageError };
+};
+
+export const selectQuizzesByUserId = async (userId) => {
+	const { data: quizzes, error: quizzesError } = await supabase
+		.from("quizzes")
+		.select("name, id")
+		.eq("host_id", userId);
+
+	if (quizzesError) {
+		console.log(quizzesError);
+	}
+
+	return { quizzes, quizzesError };
 };

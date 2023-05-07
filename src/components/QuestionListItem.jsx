@@ -4,23 +4,19 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router";
 import { useSetRecoilState } from "recoil";
 
-import { isFormEditingAtom } from "../utils/recoil_state";
-import { quizzesAtom } from "../utils/recoil_state";
+import { questionsAtom } from "../utils/recoil_state";
 
 const QuestionListItem = ({ quiz, index }) => {
 	const navigate = useNavigate();
-	const setIsFormEditing = useSetRecoilState(isFormEditingAtom);
-	const setQuizzes = useSetRecoilState(quizzesAtom);
+	const setQuestions = useSetRecoilState(questionsAtom);
 
 	const handleEdit = () => {
-		setIsFormEditing(true);
-
 		navigate(`/quiz-form/`, { state: { quiz, index } });
 	};
 
 	const handleDelete = () => {
 		if (window.confirm("Are you sure you want to delete this question?")) {
-			setQuizzes((prev) => {
+			setQuestions((prev) => {
 				const newQuizzes = [...prev];
 				newQuizzes.splice(index, 1);
 				return newQuizzes;

@@ -5,7 +5,7 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
 import QuestionListItem from "./QuestionListItem";
-import { quizzesAtom } from "../utils/recoil_state";
+import { questionsAtom } from "../utils/recoil_state";
 import {
 	uploadImage,
 	insertQuizzes,
@@ -13,13 +13,14 @@ import {
 	insertOptions,
 } from "../utils/database-operation";
 import { useAuth } from "../utils/auth";
+import useRefectQuizzes from "../hooks/useRefecthQuizzes";
 
 const QuestionList = () => {
-	const { id } = useParams();
 	const navigate = useNavigate();
-	const [quizzes, setQuizzes] = useRecoilState(quizzesAtom);
+	const [questionsState, setQuestions] = useRecoilState(questionsAtom);
 	const { user } = useAuth();
 	const { register, handleSubmit } = useForm();
+	const refetch = useRefectQuizzes();
 
 	const handleAddQuestion = () => {
 		navigate("/quiz-form/");
@@ -27,7 +28,7 @@ const QuestionList = () => {
 
 	const generateQuestionArray = async (quizId) => {
 		const questionArr = await Promise.all(
-			quizzes.map(async (quiz) => {
+			questionsState.map(async (quiz) => {
 				const { image } = await uploadImage(quiz.image);
 
 				return {
@@ -44,9 +45,9 @@ const QuestionList = () => {
 	const generateOptionsArray = (questions) => {
 		let optionsArr = [];
 
-		quizzes.forEach((quiz, index) => {
+		questionsState.forEach((question, index) => {
 			optionsArr.push(
-				quiz.options.map((option) => {
+				question.options.map((option) => {
 					return {
 						...option,
 						question_id: questions[index].id,
@@ -64,13 +65,12 @@ const QuestionList = () => {
 		const questionsArr = await generateQuestionArray(quizData.id);
 		const { questions } = await insertQuestions(questionsArr);
 
-		console.log(questions);
-
 		const optionsArr = generateOptionsArray(questions);
 		const { options } = await insertOptions(optionsArr);
 
-		setQuizzes([]);
+		setQuestions([]);
 		navigate("/");
+		refetch();
 	};
 
 	return (
@@ -90,13 +90,14 @@ const QuestionList = () => {
 				<Button
 					variant="primary"
 					type="submit"
+					s
 				>
 					Submit
 				</Button>
 			</Form>
 			<Button onClick={handleAddQuestion}>Add Question</Button>
 			<div className="quiz-list">
-				{quizzes.map((quiz, index) => (
+				{questionsState.map((quiz, index) => (
 					<QuestionListItem
 						key={quiz.id}
 						quiz={quiz}

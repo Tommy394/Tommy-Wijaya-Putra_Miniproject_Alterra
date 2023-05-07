@@ -1,22 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 import QuestionTextBox from "./QuestionTextBox";
 import Options from "./Options";
 import OptionTextBox from "./OptionTextBox";
-import AddQuestionButton from "./AddQuestionButton";
 import FileInput from "./FileInput";
 import { toBase64, getId } from "../utils/helpers";
-import { quizzesAtom } from "../utils/recoil_state";
+import { questionsAtom } from "../utils/recoil_state";
 
 const InputForm = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [quizzes, setQuizzes] = useRecoilState(quizzesAtom);
+	const setQuestions = useSetRecoilState(questionsAtom);
 
 	let initialFormValue = {
 		question: "",
@@ -28,10 +27,9 @@ const InputForm = () => {
 		initialFormValue = location.state.quiz;
 	}
 
-	const { register, handleSubmit, control, setValue, reset, getValues } =
-		useForm({
-			defaultValues: initialFormValue,
-		});
+	const { register, handleSubmit, control, setValue } = useForm({
+		defaultValues: initialFormValue,
+	});
 	const { fields, append, remove } = useFieldArray({
 		name: "options",
 		control,
@@ -43,7 +41,7 @@ const InputForm = () => {
 		}
 
 		if (location.state) {
-			setQuizzes((prev) => {
+			setQuestions((prev) => {
 				const newQuizzes = [...prev];
 				newQuizzes[location.state.index] = data;
 				return newQuizzes;
@@ -51,7 +49,7 @@ const InputForm = () => {
 
 			navigate("/question-list");
 		} else {
-			setQuizzes((prev) => [...prev, { ...data, id: getId() }]);
+			setQuestions((prev) => [...prev, { ...data, id: getId() }]);
 
 			navigate("/question-list");
 		}
@@ -59,14 +57,6 @@ const InputForm = () => {
 
 	return (
 		<Form onSubmit={handleSubmit(onSubmit)}>
-			{/* <AddQuestionButton
-				reset={reset}
-				type="submit"
-				getValues={getValues}
-				location={location}
-			>
-				Save
-			</AddQuestionButton> */}
 			<QuestionTextBox register={register} />
 			<FileInput
 				register={register}

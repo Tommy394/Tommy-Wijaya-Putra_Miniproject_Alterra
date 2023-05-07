@@ -1,4 +1,5 @@
-import { atom, selector } from "recoil";
+import { atom, selectorFamily } from "recoil";
+import { selectQuizzesByUserId } from "./database-operation";
 
 const localStorageEffect =
 	(key) =>
@@ -15,13 +16,29 @@ const localStorageEffect =
 		});
 	};
 
-export const quizzesAtom = atom({
-	key: "quizzes",
+export const questionsAtom = atom({
+	key: "questions",
 	default: [],
-	effects: [localStorageEffect("Quizzes")],
+	effects: [localStorageEffect("Questions")],
 });
 
-export const isFormEditingAtom = atom({
-	key: "isFormEditing",
-	default: false,
+export const quizzesRequestIdAtom = atom({
+	key: "quizzesRequestId",
+	default: 0,
+});
+
+export const quizzesSelector = selectorFamily({
+	key: "quizzes",
+	get:
+		(userId) =>
+		async ({ get }) => {
+			get(quizzesRequestIdAtom);
+			if (!userId) {
+				return { quizzes: null, quizzesError: null };
+			}
+			console.log(userId);
+			const { quizzes, quizzesError } = await selectQuizzesByUserId(userId);
+
+			return { quizzes, quizzesError };
+		},
 });

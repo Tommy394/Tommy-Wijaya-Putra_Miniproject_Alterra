@@ -1,22 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import QuestionTextBox from "./QuestionTextBox";
 import Options from "./Options";
 import OptionTextBox from "./OptionTextBox";
-import AddQuestionButton from "./AddQuestionButton";
 import FileInput from "./FileInput";
 import { toBase64, getId } from "../utils/helpers";
-import { quizzesAtom } from "../utils/recoil_state";
+import { v4 as uuidv4 } from "uuid";
+import { isEditingQuestionAtom, questionsAtom } from "../utils/recoil_state";
 
-const InputForm = () => {
-	const location = useLocation();
+const InputForm = ({ quiz, index, handleClose }) => {
+	// const location = useLocation();
+	// const { id } = useParams();
 	const navigate = useNavigate();
-	const [quizzes, setQuizzes] = useRecoilState(quizzesAtom);
+	const isEditingQuestion = useRecoilValue(isEditingQuestionAtom);
+	const setQuestions = useSetRecoilState(questionsAtom);
 
 	let initialFormValue = {
 		question: "",
@@ -24,14 +26,13 @@ const InputForm = () => {
 		options: Array(4).fill({ content: "", is_correct: false }),
 	};
 
-	if (location.state) {
-		initialFormValue = location.state.quiz;
+	if (isEditingQuestion) {
+		initialFormValue = quiz;
 	}
 
-	const { register, handleSubmit, control, setValue, reset, getValues } =
-		useForm({
-			defaultValues: initialFormValue,
-		});
+	const { register, handleSubmit, control, setValue } = useForm({
+		defaultValues: initialFormValue,
+	});
 	const { fields, append, remove } = useFieldArray({
 		name: "options",
 		control,
@@ -42,31 +43,24 @@ const InputForm = () => {
 			data.image = await toBase64(data.image);
 		}
 
-		if (location.state) {
-			setQuizzes((prev) => {
+		if (isEditingQuestion) {
+			setQuestions((prev) => {
 				const newQuizzes = [...prev];
-				newQuizzes[location.state.index] = data;
+				newQuizzes[index] = data;
 				return newQuizzes;
 			});
 
-			navigate("/question-list");
+			handleClose();
 		} else {
-			setQuizzes((prev) => [...prev, { ...data, id: getId() }]);
+			setQuestions((prev) => [...prev, { ...data, id: uuidv4() }]);
 
-			navigate("/question-list");
+			handleClose();
+			navigate("question-list");
 		}
 	};
 
 	return (
 		<Form onSubmit={handleSubmit(onSubmit)}>
-			{/* <AddQuestionButton
-				reset={reset}
-				type="submit"
-				getValues={getValues}
-				location={location}
-			>
-				Save
-			</AddQuestionButton> */}
 			<QuestionTextBox register={register} />
 			<FileInput
 				register={register}

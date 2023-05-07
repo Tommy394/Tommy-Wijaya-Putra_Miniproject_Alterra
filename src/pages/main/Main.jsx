@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Suspense } from "react";
 
 import supabase from "../../utils/client";
+import QuizList from "../../components/QuizList";
+import ModalInputForm from "../../components/ModalInputForm";
+
+import { useAuth } from "../../utils/auth";
 
 const Main = () => {
 	const navigate = useNavigate();
+	const { user } = useAuth();
+	const [show, setShow] = useState(false);
 
 	const handleLogout = async () => {
 		await supabase.auth.signOut();
 		navigate("login");
 	};
+
+	const handleShow = () => setShow(true);
+
+	const handleClose = () => setShow(false);
 
 	return (
 		<div>
@@ -21,9 +32,14 @@ const Main = () => {
 			>
 				Log Out
 			</Button>
-			<Link to="quiz-form">
-				<Button>Add Quiz</Button>
-			</Link>
+			<Button onClick={handleShow}>Add Quiz</Button>
+			<Suspense fallback={<div>Loading...</div>}>
+				<QuizList userId={user?.id} />
+			</Suspense>
+			<ModalInputForm
+				show={show}
+				handleClose={handleClose}
+			/>
 		</div>
 	);
 };

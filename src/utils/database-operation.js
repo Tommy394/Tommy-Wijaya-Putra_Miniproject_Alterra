@@ -3,10 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import { nanoid } from "nanoid";
 import { decode } from "base64-arraybuffer";
 
-export const insertQuizzes = async (userId, name, id = null) => {
+export const insertQuizzes = async (
+	userId,
+	name,
+	id = null,
+	duration = null
+) => {
 	const { data: quizData, error: quizDataError } = await supabase
 		.from("quizzes")
-		.upsert([{ host_id: userId, name, id: id ? id : nanoid(6) }])
+		.upsert([{ host_id: userId, name, id: id ? id : nanoid(6), duration }])
 		.select()
 		.single();
 
@@ -87,7 +92,7 @@ export const selectQuizById = async (quizId) => {
 	const { data: quiz, error: quizError } = await supabase
 		.from("quizzes")
 		.select(
-			"name, questions(content, id, image, options(content, is_correct, id))"
+			"name, duration, questions(content, id, image, options(content, is_correct, id))"
 		)
 		.eq("id", quizId)
 		.single();

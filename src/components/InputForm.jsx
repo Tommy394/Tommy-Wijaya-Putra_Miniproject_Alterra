@@ -9,15 +9,20 @@ import QuestionTextBox from "./QuestionTextBox";
 import Options from "./Options";
 import OptionTextBox from "./OptionTextBox";
 import FileInput from "./FileInput";
-import { toBase64, getId } from "../utils/helpers";
+import { toBase64 } from "../utils/helpers";
 import { v4 as uuidv4 } from "uuid";
-import { isEditingQuestionAtom, questionsAtom } from "../utils/recoil_state";
+import {
+	isEditingQuestionAtom,
+	questionsAtom,
+	isEditingQuizAtom,
+} from "../utils/recoil_state";
 
 const InputForm = ({ quiz, index, handleClose }) => {
 	// const location = useLocation();
 	// const { id } = useParams();
 	const navigate = useNavigate();
 	const isEditingQuestion = useRecoilValue(isEditingQuestionAtom);
+	const isEditingQuiz = useRecoilValue(isEditingQuizAtom);
 	const setQuestions = useSetRecoilState(questionsAtom);
 
 	let initialFormValue = {
@@ -55,7 +60,9 @@ const InputForm = ({ quiz, index, handleClose }) => {
 			setQuestions((prev) => [...prev, { ...data, id: uuidv4() }]);
 
 			handleClose();
-			navigate("question-list");
+			if (!isEditingQuiz) {
+				navigate("question-list");
+			}
 		}
 	};
 

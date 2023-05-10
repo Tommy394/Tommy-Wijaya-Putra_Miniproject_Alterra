@@ -11,6 +11,7 @@ const QuestionTextBox = ({ register }) => {
 			<Form.Control
 				type="text"
 				placeholder="Type your question here"
+				autoFocus
 				{...register("question")}
 			/>
 		</Form.Group>

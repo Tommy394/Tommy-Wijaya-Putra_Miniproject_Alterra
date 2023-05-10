@@ -6,12 +6,15 @@ import {
 	redirect,
 } from "react-router-dom";
 import { RecoilRoot } from "recoil";
+import { Suspense } from "react";
 
 import Login from "./pages/login/Login";
 import Registration from "./pages/registration/Registration";
 import Main from "./pages/main/Main";
 import InputForm from "./components/InputForm";
 import QuestionList from "./components/QuestionList";
+import Quiz from "./components/Quiz";
+import Loading from "./components/Loading";
 import { AuthProvider } from "./utils/auth";
 import supabase from "./utils/client";
 import "./style.css";
@@ -67,6 +70,14 @@ const router = createBrowserRouter([
 	{
 		path: "question-list/:id",
 		element: <QuestionList />,
+	},
+	{
+		path: "play-quiz/:id",
+		element: (
+			<Suspense fallback={<Loading />}>
+				<Quiz />
+			</Suspense>
+		),
 	},
 ]);
 

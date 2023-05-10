@@ -1,21 +1,19 @@
 import React, { useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router";
 import { useSetRecoilState } from "recoil";
 
 import { isEditingQuestionAtom, questionsAtom } from "../utils/recoil_state";
-import ModalInputForm from "./ModalInputForm";
+import Modal from "./Modal";
+import InputForm from "./InputForm";
 
 const QuestionListItem = ({ quiz, index }) => {
-	const navigate = useNavigate();
 	const setQuestions = useSetRecoilState(questionsAtom);
 	const setIsEditingQuestion = useSetRecoilState(isEditingQuestionAtom);
 
 	const [show, setShow] = useState(false);
 
 	const handleEdit = () => {
-		// navigate(`/quiz-form/`, { state: { quiz, index} });
 		setIsEditingQuestion(true);
 		setShow(true);
 	};
@@ -77,12 +75,17 @@ const QuestionListItem = ({ quiz, index }) => {
 					</Button>
 				</Card.Body>
 			</Card>
-			<ModalInputForm
+			<Modal
 				show={show}
-				quiz={quiz}
-				index={index}
 				handleClose={handleClose}
-			/>
+				fullscreen={true}
+				title="Edit Question"
+			>
+				<InputForm
+					quiz={quiz}
+					index={index}
+				/>
+			</Modal>
 		</>
 	);
 };

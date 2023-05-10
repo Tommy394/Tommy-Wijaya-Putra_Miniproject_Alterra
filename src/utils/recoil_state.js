@@ -1,5 +1,5 @@
-import { atom, selectorFamily } from "recoil";
-import { selectQuizzesByUserId } from "./database-operation";
+import { atom, selector, selectorFamily } from "recoil";
+import { selectQuizById, selectQuizzesByUserId } from "./database-operation";
 
 const localStorageEffect =
 	(key) =>
@@ -36,11 +36,22 @@ export const quizzesSelector = selectorFamily({
 			if (!userId) {
 				return { quizzes: null, quizzesError: null };
 			}
-			console.log(userId);
 			const { quizzes, quizzesError } = await selectQuizzesByUserId(userId);
 
 			return { quizzes, quizzesError };
 		},
+});
+
+export const playQuizzesSelector = selectorFamily({
+	key: "playQuizzes",
+	get: (quizId) => async () => {
+		if (!quizId) {
+			return { quiz: null, quizError: null };
+		}
+		const { quiz, quizError } = await selectQuizById(quizId);
+
+		return { quiz, quizError };
+	},
 });
 
 export const isEditingQuestionAtom = atom({
@@ -50,5 +61,31 @@ export const isEditingQuestionAtom = atom({
 
 export const isEditingQuizAtom = atom({
 	key: "isEditingQuiz",
+	default: false,
+});
+
+export const currentQuestionAtom = atom({
+	key: "currentQuestion",
+	default: 0,
+});
+
+export const showResultSelector = selectorFamily({
+	key: "showResult",
+	get:
+		(questionLength) =>
+		async ({ get }) => {
+			const currentQuestion = get(currentQuestionAtom);
+
+			return currentQuestion >= questionLength - 1;
+		},
+});
+
+export const quizScoreAtom = atom({
+	key: "quizScore",
+	default: 0,
+});
+
+export const isQuizStartedAtom = atom({
+	key: "isQuizStarted",
 	default: false,
 });

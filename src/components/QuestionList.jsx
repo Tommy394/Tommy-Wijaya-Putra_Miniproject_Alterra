@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { Button, Form } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
+import { Button, Form, FloatingLabel } from "react-bootstrap";
+import { set, useForm } from "react-hook-form";
 
 import QuestionListItem from "./QuestionListItem";
-import ModalInputForm from "./ModalInputForm";
+import Modal from "./Modal";
+import InputForm from "./InputForm";
 import { isEditingQuizAtom, questionsAtom } from "../utils/recoil_state";
 import {
-	uploadImage,
 	insertQuizzes,
 	insertQuestions,
 	insertOptions,
@@ -17,31 +17,25 @@ import {
 } from "../utils/database-operation";
 import { useAuth } from "../utils/auth";
 import useRefectQuizzes from "../hooks/useRefecthQuizzes";
-import { toBase64 } from "../utils/helpers";
+import {
+	toBase64,
+	renameObjectKey,
+	generateQuestionArray,
+	generateOptionsArray,
+	convertMinutesAndSecondsToMilliseconds,
+	convertMillisecondsToMinutesAndSeconds,
+} from "../utils/helpers";
 
 const QuestionList = () => {
 	const { id } = useParams();
-	const [isEditingQuiz, setIsEditingQuiz] = useRecoilState(isEditingQuizAtom);
 	const location = useLocation();
-	const [questionsState, setQuestions] = useRecoilState(questionsAtom);
 	const navigate = useNavigate();
+	const [isEditingQuiz, setIsEditingQuiz] = useRecoilState(isEditingQuizAtom);
+	const [questionsState, setQuestions] = useRecoilState(questionsAtom);
 	const { user } = useAuth();
 	const [show, setShow] = useState(false);
 	const { register, handleSubmit, setValue } = useForm();
 	const refetch = useRefectQuizzes();
-
-	console.log("render");
-
-	const renameObjectKey = (o, oldKey, newKey) => {
-		if (oldKey !== newKey) {
-			Object.defineProperty(
-				o,
-				newKey,
-				Object.getOwnPropertyDescriptor(o, oldKey)
-			);
-			delete o[oldKey];
-		}
-	};
 
 	useEffect(() => {
 		const getQuestionsandOptions = async () => {
@@ -56,6 +50,11 @@ const QuestionList = () => {
 					renameObjectKey(question, "content", "question");
 
 					setValue("quizName", quiz.name);
+					const { minutes, seconds } = convertMillisecondsToMinutesAndSeconds(
+						quiz.duration
+					);
+					setValue("minutes", minutes);
+					setValue("seconds", seconds);
 				}
 
 				setQuestions(quiz.questions);
@@ -71,54 +70,26 @@ const QuestionList = () => {
 		handleShow();
 	};
 
-	const generateQuestionArray = async (quizId) => {
-		console.log(questionsState);
-		const questionArr = await Promise.all(
-			questionsState.map(async (quiz) => {
-				const { image } = await uploadImage(quiz.image);
-
-				return {
-					id: quiz.id,
-					content: quiz.question,
-					image: image?.path,
-					quiz_id: quizId,
-				};
-			})
+	const onSubmit = async (data) => {
+		const durationTimeStampMs = convertMinutesAndSecondsToMilliseconds(
+			data.minutes,
+			data.seconds
+		);
+		const { quizData } = await insertQuizzes(
+			user.id,
+			data.quizName,
+			id,
+			durationTimeStampMs
 		);
 
-		return questionArr;
-	};
-
-	const generateOptionsArray = (questions) => {
-		let optionsArr = [];
-
-		questionsState.forEach((question, index) => {
-			optionsArr.push(
-				question.options.map((option) => {
-					return {
-						...option,
-						id: option.id ? option.id : null,
-						question_id: questions[index].id,
-					};
-				})
-			);
-		});
-
-		return optionsArr.flat();
-	};
-
-	const onSubmit = async (data) => {
-		const { quizData } = await insertQuizzes(user.id, data.quizName, id);
-
-		const questionsArr = await generateQuestionArray(quizData.id);
+		const questionsArr = await generateQuestionArray(
+			quizData.id,
+			questionsState
+		);
 		const { questions } = await insertQuestions(questionsArr);
 
-		console.log(questionsState);
-
-		const optionsArr = generateOptionsArray(questions);
+		const optionsArr = generateOptionsArray(questions, questionsState);
 		const { options } = await insertOptions(optionsArr);
-
-		console.log(options);
 
 		setQuestions([]);
 		setIsEditingQuiz(false);
@@ -140,6 +111,28 @@ const QuestionList = () => {
 						{...register("quizName")}
 					/>
 				</Form.Group>
+				<FloatingLabel
+					controlId="minutes"
+					label="Minutes"
+					className="mb-3"
+				>
+					<Form.Control
+						type="number"
+						placeholder="name@example.com"
+						{...register("minutes")}
+					/>
+				</FloatingLabel>
+				<FloatingLabel
+					controlId="seconds"
+					label="Seconds"
+					className="mb-3"
+				>
+					<Form.Control
+						type="number"
+						placeholder="name@example.com"
+						{...register("seconds")}
+					/>
+				</FloatingLabel>
 				<Button
 					variant="primary"
 					type="submit"
@@ -159,10 +152,15 @@ const QuestionList = () => {
 					/>
 				))}
 			</div>
-			<ModalInputForm
+			<Modal
 				show={show}
 				handleClose={handleClose}
-			/>
+				fullscreen={true}
+				title="Add Question"
+				centered={true}
+			>
+				<InputForm handleClose={handleClose} />
+			</Modal>
 		</>
 	);
 };

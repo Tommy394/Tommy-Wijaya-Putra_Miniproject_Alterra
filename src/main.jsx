@@ -15,28 +15,54 @@ import InputForm from "./components/InputForm";
 import QuestionList from "./components/QuestionList";
 import Quiz from "./components/Quiz";
 import Loading from "./components/Loading";
+import Layout from "./Layout";
 import { AuthProvider } from "./utils/auth";
 import supabase from "./utils/client";
-import "./style.css";
+import "./css/main.css";
 
 const router = createBrowserRouter([
-	// {
-	// 	path: "/",
-	// 	element: <PrivateRoute />,
-	// 	children: [{ element: <Main />, index: true }],
-	// },
 	{
 		path: "/",
-		element: <Main />,
-		loader: async () => {
-			const {
-				data: { session },
-			} = await supabase.auth.getSession();
-			if (!session) {
-				return redirect("login");
-			}
-			return null;
-		},
+		element: <Layout />,
+		children: [
+			{
+				element: <Main />,
+				index: true,
+				loader: async () => {
+					const {
+						data: { session },
+					} = await supabase.auth.getSession();
+					if (!session) {
+						return redirect("login");
+					}
+					return null;
+				},
+			},
+			{
+				path: "quiz-form/",
+				element: <InputForm />,
+			},
+			{
+				path: "quiz-form/:id",
+				element: <InputForm />,
+			},
+			{
+				path: "question-list",
+				element: <QuestionList />,
+			},
+			{
+				path: "question-list/:id",
+				element: <QuestionList />,
+			},
+			{
+				path: "play-quiz/:id",
+				element: (
+					<Suspense fallback={<Loading />}>
+						<Quiz />
+					</Suspense>
+				),
+			},
+		],
 	},
 	{
 		path: "login",
@@ -54,30 +80,6 @@ const router = createBrowserRouter([
 	{
 		path: "registration",
 		element: <Registration />,
-	},
-	{
-		path: "quiz-form/",
-		element: <InputForm />,
-	},
-	{
-		path: "quiz-form/:id",
-		element: <InputForm />,
-	},
-	{
-		path: "question-list",
-		element: <QuestionList />,
-	},
-	{
-		path: "question-list/:id",
-		element: <QuestionList />,
-	},
-	{
-		path: "play-quiz/:id",
-		element: (
-			<Suspense fallback={<Loading />}>
-				<Quiz />
-			</Suspense>
-		),
 	},
 ]);
 

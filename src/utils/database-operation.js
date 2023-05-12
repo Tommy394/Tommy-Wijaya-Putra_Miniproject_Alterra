@@ -9,6 +9,10 @@ export const insertQuizzes = async (
 	id = null,
 	duration = null
 ) => {
+	if (id === "question-list") {
+		id = null;
+	}
+
 	const { data: quizData, error: quizDataError } = await supabase
 		.from("quizzes")
 		.upsert([{ host_id: userId, name, id: id ? id : nanoid(6), duration }])

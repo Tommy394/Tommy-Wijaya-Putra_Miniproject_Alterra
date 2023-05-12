@@ -3,7 +3,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
+import Container from "react-bootstrap/Container";
 
 import QuestionTextBox from "./QuestionTextBox";
 import Options from "./Options";
@@ -18,11 +19,9 @@ import {
 } from "../utils/recoil_state";
 
 const InputForm = ({ quiz, index, handleClose }) => {
-	// const location = useLocation();
-	// const { id } = useParams();
 	const navigate = useNavigate();
 	const isEditingQuestion = useRecoilValue(isEditingQuestionAtom);
-	const isEditingQuiz = useRecoilValue(isEditingQuizAtom);
+	const [isEditingQuiz, setIsEiditingQuiz] = useRecoilState(isEditingQuizAtom);
 	const setQuestions = useSetRecoilState(questionsAtom);
 
 	let initialFormValue = {
@@ -34,6 +33,9 @@ const InputForm = ({ quiz, index, handleClose }) => {
 	if (isEditingQuestion) {
 		initialFormValue = quiz;
 	}
+
+	console.log(isEditingQuestion);
+	console.log(isEditingQuiz);
 
 	const { register, handleSubmit, control, setValue } = useForm({
 		defaultValues: initialFormValue,
@@ -62,43 +64,50 @@ const InputForm = ({ quiz, index, handleClose }) => {
 			handleClose();
 			if (!isEditingQuiz) {
 				navigate("question-list");
+			} else {
+				setIsEiditingQuiz(false);
 			}
 		}
 	};
 
 	return (
-		<Form onSubmit={handleSubmit(onSubmit)}>
-			<QuestionTextBox register={register} />
-			<FileInput
-				register={register}
-				control={control}
-				setValue={setValue}
-			/>
-			<Options>
-				{fields.map((field, index) => (
-					<OptionTextBox
-						key={field.id}
-						index={index}
-						register={register}
-						remove={remove}
-						control={control}
-						setValue={setValue}
-					/>
-				))}
-			</Options>
-			<Button
-				type="button"
-				onClick={() => append({ content: "" })}
-			>
-				Add option
-			</Button>
-			<Button
-				variant="primary"
-				type="submit"
-			>
-				Save
-			</Button>
-		</Form>
+		<Container className="mt-3">
+			<Form onSubmit={handleSubmit(onSubmit)}>
+				<QuestionTextBox register={register} />
+				<FileInput
+					register={register}
+					control={control}
+					setValue={setValue}
+				/>
+				<Options>
+					{fields.map((field, index) => (
+						<OptionTextBox
+							key={field.id}
+							index={index}
+							register={register}
+							remove={remove}
+							control={control}
+							setValue={setValue}
+						/>
+					))}
+				</Options>
+				<div className="mt-4">
+					<Button
+						type="button"
+						onClick={() => append({ content: "" })}
+						className="me-3"
+					>
+						Add option
+					</Button>
+					<Button
+						variant="primary"
+						type="submit"
+					>
+						Save
+					</Button>
+				</div>
+			</Form>
+		</Container>
 	);
 };
 

@@ -3,6 +3,9 @@ import { useNavigate, useParams, useLocation } from "react-router";
 import { useRecoilState } from "recoil";
 import { Button, Form, FloatingLabel } from "react-bootstrap";
 import { set, useForm } from "react-hook-form";
+import Container from "react-bootstrap/Container";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import QuestionListItem from "./QuestionListItem";
 import Modal from "./Modal";
@@ -49,6 +52,7 @@ const QuestionList = () => {
 					}
 					renameObjectKey(question, "content", "question");
 
+					// Set Inputs Value
 					setValue("quizName", quiz.name);
 					const { minutes, seconds } = convertMillisecondsToMinutesAndSeconds(
 						quiz.duration
@@ -98,57 +102,74 @@ const QuestionList = () => {
 	};
 
 	return (
-		<>
-			<Form onSubmit={handleSubmit(onSubmit)}>
-				<Form.Group
-					className="mb-3"
-					controlId="quizName"
-				>
-					<Form.Label>Quiz Name</Form.Label>
-					<Form.Control
-						type="text"
-						placeholder="Insert your Quiz's Name"
-						{...register("quizName")}
-					/>
-				</Form.Group>
-				<FloatingLabel
-					controlId="minutes"
-					label="Minutes"
-					className="mb-3"
-				>
-					<Form.Control
-						type="number"
-						placeholder="name@example.com"
-						{...register("minutes")}
-					/>
-				</FloatingLabel>
-				<FloatingLabel
-					controlId="seconds"
-					label="Seconds"
-					className="mb-3"
-				>
-					<Form.Control
-						type="number"
-						placeholder="name@example.com"
-						{...register("seconds")}
-					/>
-				</FloatingLabel>
-				<Button
-					variant="primary"
-					type="submit"
-					s
-				>
-					Submit
-				</Button>
-			</Form>
-
-			<Button onClick={handleAddQuestion}>Add Question</Button>
-			<div className="quiz-list">
+		<Container className="row m-auto justify-content-center mt-5">
+			<div className="col-4 me-4">
+				<Form onSubmit={handleSubmit(onSubmit)}>
+					<Form.Group
+						className="mb-3"
+						controlId="quizName"
+					>
+						<Form.Label>Quiz Name</Form.Label>
+						<Form.Control
+							type="text"
+							placeholder="Insert your Quiz's Name"
+							{...register("quizName")}
+						/>
+					</Form.Group>
+					<p>Duration </p>
+					<div className="row">
+						<FloatingLabel
+							controlId="minutes"
+							label="Minutes"
+							className="mb-3 col"
+						>
+							<Form.Control
+								type="number"
+								placeholder="name@example.com"
+								{...register("minutes")}
+							/>
+						</FloatingLabel>
+						<FloatingLabel
+							controlId="seconds"
+							label="Seconds"
+							className="mb-3 col"
+						>
+							<Form.Control
+								type="number"
+								placeholder="name@example.com"
+								{...register("seconds")}
+							/>
+						</FloatingLabel>
+					</div>
+					<div className="d-flex mt-3">
+						<Button
+							variant="primary"
+							type="submit"
+							className="me-2"
+						>
+							Submit
+						</Button>
+						<Button
+							type="button"
+							onClick={handleAddQuestion}
+							className="bg-gradient"
+						>
+							<FontAwesomeIcon
+								icon={faPlus}
+								className="me-1"
+							/>{" "}
+							Add Question
+						</Button>
+					</div>
+				</Form>
+			</div>
+			<div className="quiz-list col-7 row bg-secondary justify-content-center align-items-stretch px-2 py-5 rounded-4">
 				{questionsState.map((quiz, index) => (
 					<QuestionListItem
 						key={quiz.id}
 						quiz={quiz}
 						index={index}
+						className="mb-3 bg-primary col-6 rounded-4"
 					/>
 				))}
 			</div>
@@ -161,7 +182,7 @@ const QuestionList = () => {
 			>
 				<InputForm handleClose={handleClose} />
 			</Modal>
-		</>
+		</Container>
 	);
 };
 

@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Container from "react-bootstrap/Container";
 
 import supabase from "../../utils/client";
 
@@ -32,42 +33,56 @@ const Registration = () => {
 	};
 
 	return (
-		<Form onSubmit={handleSubmit(onSubmit)}>
-			{console.log("render")}
-			<Form.Group
-				className="mb-3"
-				controlId="emailRegistration"
+		<Container className="mt-5 d-flex flex-column justify-content-center align-items-center w-50 rounded-5">
+			<h1>Registration</h1>
+			<Form
+				className="mt-5"
+				onSubmit={handleSubmit(onSubmit)}
 			>
-				<Form.Label>Email address</Form.Label>
-				<Form.Control
-					type="email"
-					placeholder="Enter email"
-					{...register("email")}
-				/>
-				<Form.Text className="text-muted">
-					We&apos;ll never share your email with anyone else.
-				</Form.Text>
-			</Form.Group>
-
-			<Form.Group
-				className="mb-3"
-				controlId="passwordRegistration"
-			>
-				<Form.Label>Password</Form.Label>
-				<Form.Control
-					type="password"
-					placeholder="Password"
-					autoComplete="new-password"
-					{...register("password")}
-				/>
-			</Form.Group>
-			<Button
-				variant="primary"
-				type="submit"
-			>
-				Submit
-			</Button>
-		</Form>
+				{console.log("render")}
+				<Form.Group
+					className="mb-3"
+					controlId="emailRegistration"
+				>
+					<Form.Label>Email address</Form.Label>
+					<Form.Control
+						type="email"
+						placeholder="Enter email"
+						{...register("email")}
+					/>
+					<Form.Text className="text-muted">
+						We&apos;ll never share your email with anyone else.
+					</Form.Text>
+				</Form.Group>
+				<Form.Group
+					className="mb-3"
+					controlId="passwordRegistration"
+				>
+					<Form.Label>Password</Form.Label>
+					<Form.Control
+						type="password"
+						placeholder="Password"
+						autoComplete="new-password"
+						{...register("password")}
+					/>
+				</Form.Group>
+				<Button
+					variant="primary"
+					type="submit"
+				>
+					Submit
+				</Button>
+				<p className="mt-4">
+					Alredy have an account?{" "}
+					<a
+						className="text-primary"
+						href="/login"
+					>
+						Login Here
+					</a>
+				</p>
+			</Form>
+		</Container>
 	);
 };
 

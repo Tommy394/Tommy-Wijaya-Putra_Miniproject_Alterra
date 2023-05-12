@@ -3,6 +3,8 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Button from "react-bootstrap/Button";
 import { Controller } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const OptionTextBox = ({ register, index, remove, control, setValue }) => {
 	const handleCheckboxChange = (e, index) => {
@@ -53,7 +55,7 @@ const OptionTextBox = ({ register, index, remove, control, setValue }) => {
 				type="Button"
 				onClick={() => remove(index)}
 			>
-				Delete
+				<FontAwesomeIcon icon={faTrash} />
 			</Button>
 		</InputGroup>
 	);

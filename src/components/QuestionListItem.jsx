@@ -1,17 +1,26 @@
 import React, { useState } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
-import { isEditingQuestionAtom, questionsAtom } from "../utils/recoil_state";
+import {
+	answersAtom,
+	isEditingQuestionAtom,
+	questionsAtom,
+} from "../utils/recoil_state";
 import Modal from "./Modal";
 import InputForm from "./InputForm";
 
-const QuestionListItem = ({ quiz, index }) => {
+const QuestionListItem = ({ quiz, index, previewAnswers = false, ...prop }) => {
 	const setQuestions = useSetRecoilState(questionsAtom);
 	const setIsEditingQuestion = useSetRecoilState(isEditingQuestionAtom);
+	const answers = useRecoilValue(answersAtom);
 
 	const [show, setShow] = useState(false);
+
+	console.log(quiz);
 
 	const handleEdit = () => {
 		setIsEditingQuestion(true);
@@ -35,8 +44,11 @@ const QuestionListItem = ({ quiz, index }) => {
 
 	return (
 		<>
-			<Card style={{ width: "18rem" }}>
-				<Card.Body>
+			<Card
+				style={{ width: "18rem" }}
+				{...prop}
+			>
+				<Card.Body className="d-flex flex-column justify-content-center text-left">
 					<Card.Title>No. {index + 1}</Card.Title>
 					<div>
 						<h6>Question:</h6>
@@ -47,32 +59,49 @@ const QuestionListItem = ({ quiz, index }) => {
 								style={{ width: "100px" }}
 							/>
 						)}
-						<p>{quiz.question}</p>
+						<p>{quiz.question ? quiz.question : quiz.content}</p>
 						<hr />
 						<h6>Options</h6>
 						<ul>
-							{quiz.options.map((option, index) => (
-								<li
-									className={option.is_correct ? "correct_answer" : ""}
-									key={index}
-								>
-									{option.content}
-								</li>
-							))}
+							{quiz.options.map((option, i) => {
+								return (
+									<li
+										className={option.is_correct ? "correct_answer" : ""}
+										key={i}
+									>
+										{option.content}
+										{previewAnswers && answers[index]?.id === option.id ? (
+											<span className="text-muted ms-1">(Your Answer)</span>
+										) : (
+											""
+										)}
+									</li>
+								);
+							})}
 						</ul>
 					</div>
-					<Button
-						variant="success"
-						onClick={handleEdit}
-					>
-						Edit
-					</Button>
-					<Button
-						variant="danger"
-						onClick={handleDelete}
-					>
-						Delete
-					</Button>
+					{!previewAnswers && (
+						<div className="card__icons">
+							<Button
+								variant="primary"
+								onClick={handleEdit}
+							>
+								<FontAwesomeIcon
+									icon={faPenToSquare}
+									style={{ color: "#ffffff" }}
+								/>
+							</Button>
+							<Button
+								variant="primary"
+								onClick={handleDelete}
+							>
+								<FontAwesomeIcon
+									icon={faTrash}
+									style={{ color: "#ffffff" }}
+								/>
+							</Button>
+						</div>
+					)}
 				</Card.Body>
 			</Card>
 			<Modal
@@ -84,6 +113,7 @@ const QuestionListItem = ({ quiz, index }) => {
 				<InputForm
 					quiz={quiz}
 					index={index}
+					handleClose={handleClose}
 				/>
 			</Modal>
 		</>

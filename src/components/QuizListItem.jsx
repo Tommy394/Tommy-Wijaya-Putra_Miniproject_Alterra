@@ -4,6 +4,8 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { isEditingQuizAtom, quizzesRequestIdAtom } from "../utils/recoil_state";
 import { deleteQuizById } from "../utils/database-operation";
@@ -31,31 +33,46 @@ const QuizListItem = ({ quiz }) => {
 	return (
 		<>
 			<Col>
-				<Card style={{ width: "18rem" }}>
+				<Card
+					className="w-100 bg-primary px-3 py-2 rounded-3 position-relative"
+					style={{ width: "18rem" }}
+				>
 					<Card.Body onClick={handleQuizClick}>
 						<Card.Title>{quiz.name}</Card.Title>
-						<Card.Subtitle className="mb-2 text-muted">{quiz.id}</Card.Subtitle>
-						<Card.Text>Some quick ex content.</Card.Text>
+						<Card.Subtitle className="mb-2 text-muted">
+							Quiz ID: {quiz.id}
+						</Card.Subtitle>
 					</Card.Body>
-					<a
-						href={`https://wa.me/?text=This+user+invites+you+to+join+and+play+the+user%27s+created+quiz.+Come+and+prove+your+knowledge.+%0D%0A%0D%0Ahttp%3A%2F%2Flocalhost%3A5173%2Fplay-quiz%2F${quiz.id}`}
-						target="_blank"
-					>
-						<Button
-							variant="success"
-							type="button"
-							// onClick={handleShareQuiz}
+					<div className="card__icons">
+						<a
+							href={`https://wa.me/?text=This+user+invites+you+to+join+and+play+the+user%27s+created+quiz.+Come+and+prove+your+knowledge.+%0D%0A%0D%0Ahttp%3A%2F%2Flocalhost%3A5173%2Fplay-quiz%2F${quiz.id}`}
+							target="_blank"
+							rel="noreferrer"
 						>
-							Share
+							<Button
+								variant="primary"
+								type="button"
+								// onClick={handleShareQuiz}
+								className="card__share-icon"
+							>
+								<FontAwesomeIcon
+									icon={faShare}
+									style={{ color: "#ffffff" }}
+								/>
+							</Button>
+						</a>
+						<Button
+							variant="primary"
+							type="button"
+							onClick={handleDeleteQuiz}
+							className="card__delete-icon"
+						>
+							<FontAwesomeIcon
+								icon={faTrash}
+								style={{ color: "#ffffff" }}
+							/>
 						</Button>
-					</a>
-					<Button
-						variant="danger"
-						type="button"
-						onClick={handleDeleteQuiz}
-					>
-						Delete
-					</Button>
+					</div>
 				</Card>
 			</Col>
 		</>

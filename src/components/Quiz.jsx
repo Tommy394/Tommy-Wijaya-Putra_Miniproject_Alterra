@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import Button from "react-bootstrap/Button";
 
-import { playQuizzesSelector, quizScoreAtom } from "../utils/recoil_state";
+import {
+	answersAtom,
+	playQuizzesSelector,
+	previewQuestionsAtom,
+} from "../utils/recoil_state";
 import Question from "./Question";
 import { currentQuestionAtom } from "../utils/recoil_state";
 import Modal from "./Modal";
+import Result from "./Result";
 import CountdownTimer from "./CountdownTimer";
+import { Container } from "react-bootstrap";
 
 const Quiz = () => {
 	const param = useParams();
@@ -15,18 +21,15 @@ const Quiz = () => {
 	const [currentQuestion, setCurrentQuestion] =
 		useRecoilState(currentQuestionAtom);
 	const [showModal, setShowModal] = useState(false);
-	const [score, setScore] = useRecoilState(quizScoreAtom);
+	const setAnswers = useSetRecoilState(answersAtom);
+	const setPreviewQuestion = useSetRecoilState(previewQuestionsAtom);
+	// const [score, setScore] = useRecoilState(quizScoreAtom);
 
 	const { quiz } = useRecoilValue(playQuizzesSelector(param.id));
+	console.log(quiz);
 	const questions = quiz.questions;
 
-	// useEffect(() => {
-	// 	if (currentQuestion === questions.length) {
-	// 		setShowModal(true);
-
-	// 		return;
-	// 	}
-	// }, [currentQuestion, questions.length]);
+	console.log(currentQuestion);
 
 	const handleShowModal = () => {
 		setShowModal(true);
@@ -38,12 +41,13 @@ const Quiz = () => {
 
 	const handleQuizFinish = () => {
 		setCurrentQuestion(0);
-		setScore(0);
+		setPreviewQuestion([]);
+		setAnswers([]);
 		navigate("/");
 	};
 
 	return (
-		<>
+		<Container className="mt-5">
 			<div>
 				<h1>Quiz Name: {quiz.name}</h1>
 				{quiz.duration && (
@@ -67,9 +71,9 @@ const Quiz = () => {
 				closeButton={false}
 				modalFooter={<Button onClick={handleQuizFinish}>Finish</Button>}
 			>
-				Your score is {score} / {questions.length}
+				<Result quizLength={questions.length} />
 			</Modal>
-		</>
+		</Container>
 	);
 };
 

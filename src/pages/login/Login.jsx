@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import Container from "react-bootstrap/Container";
 
 import supabase from "../../utils/client";
 import { useAuth } from "../../utils/auth";
@@ -29,7 +30,8 @@ const Login = () => {
 	};
 
 	return (
-		<>
+		<Container className="mt-5 d-flex flex-column justify-content-center align-items-center w-50 rounded-5">
+			<h1>Login</h1>
 			<Form onSubmit={handleLogin}>
 				<Form.Group
 					className="mb-3"
@@ -65,13 +67,17 @@ const Login = () => {
 					Submit
 				</Button>
 			</Form>
-			<Button
-				variant="primary"
-				onClick={() => navigate("/registration")}
-			>
-				To Register
-			</Button>
-		</>
+			<p className="mt-4">
+				Don&apos;t have an account?{" "}
+				<a
+					href="/registration"
+					className="text-primary"
+					// onClick={() => navigate("/registration")}
+				>
+					Register Here
+				</a>
+			</p>
+		</Container>
 	);
 };
 

@@ -44,14 +44,17 @@ export const quizzesSelector = selectorFamily({
 
 export const playQuizzesSelector = selectorFamily({
 	key: "playQuizzes",
-	get: (quizId) => async () => {
-		if (!quizId) {
-			return { quiz: null, quizError: null };
-		}
-		const { quiz, quizError } = await selectQuizById(quizId);
+	get:
+		(quizId) =>
+		async ({ get }) => {
+			if (!quizId) {
+				return { quiz: null, quizError: null };
+			}
+			get(quizzesRequestIdAtom);
+			const { quiz, quizError } = await selectQuizById(quizId);
 
-		return { quiz, quizError };
-	},
+			return { quiz, quizError };
+		},
 });
 
 export const isEditingQuestionAtom = atom({
@@ -80,12 +83,17 @@ export const showResultSelector = selectorFamily({
 		},
 });
 
-export const quizScoreAtom = atom({
-	key: "quizScore",
-	default: 0,
-});
-
 export const isQuizStartedAtom = atom({
 	key: "isQuizStarted",
 	default: false,
+});
+
+export const answersAtom = atom({
+	key: "answers",
+	default: [],
+});
+
+export const previewQuestionsAtom = atom({
+	key: "previewQuestions",
+	default: [],
 });

@@ -8,8 +8,8 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import {
+	answersAtom,
 	currentQuestionAtom,
-	quizScoreAtom,
 	showResultSelector,
 } from "../utils/recoil_state";
 import { downloadImage } from "../utils/database-operation";
@@ -19,27 +19,28 @@ const Question = ({ question, handleShowModal, questionLength }) => {
 	const setCurrentQuestion = useSetRecoilState(currentQuestionAtom);
 	const showResult = useRecoilValue(showResultSelector(questionLength));
 	const [imageBase64, setImageBase64] = useState(null);
-	const setScore = useSetRecoilState(quizScoreAtom);
+	// const setScore = useSetRecoilState(quizScoreAtom);
+
 	const options = question.options;
+
+	const setAnswers = useSetRecoilState(answersAtom);
 
 	const { control, getValues, watch } = useForm({
 		defaultValues: { options },
 	});
 
-	const handleOptionIsCorrect = () => {
+	const storeAnswer = () => {
 		const targetOptionId = getValues("options.target");
 
 		const targetOption = options.find((option) => {
 			return option.id === targetOptionId;
 		});
 
-		if (targetOption.is_correct === true) {
-			setScore((prev) => prev + 1);
-		}
+		setAnswers((prev) => [...prev, targetOption]);
 	};
 
 	const handleNextQuestion = () => {
-		handleOptionIsCorrect();
+		storeAnswer();
 
 		if (showResult) {
 			handleShowModal();
@@ -59,53 +60,56 @@ const Question = ({ question, handleShowModal, questionLength }) => {
 	}, [question]);
 
 	return (
-		<Card
-			border="light"
-			style={{ width: "40rem" }}
-		>
-			<Card.Header className="p-3">
-				{question.image && (
-					<img
-						src={imageBase64}
-						alt=""
-						style={{ width: "80px" }}
-					/>
-				)}
-				<h5>{question.content}</h5>
-			</Card.Header>
-			<Card.Body>
-				<Row>
-					<ButtonGroup className="row">
-						{options.map((option, idx) => (
-							<Controller
-								control={control}
-								name={`options.target`}
-								key={option.id}
-								render={({ field: { onChange, value } }) => (
-									<ToggleButton
-										type="radio"
-										variant="outline-success"
-										id={`radio-${idx}`}
-										value={option.id}
-										checked={value === option.id}
-										onChange={(e) => onChange(e.target.value)}
-										className="col-6 mr-2 mb-2"
-									>
-										{option.content}
-									</ToggleButton>
-								)}
+		<div className=" w-75 m-auto mt-5">
+			<Card
+				border="light"
+				className="question__card rounded-5 mt-5"
+			>
+				<Card.Body>
+					<div className="d-flex flex-column align-items-center mb-5">
+						{question.image && (
+							<img
+								src={imageBase64}
+								alt=""
+								style={{ width: "80px" }}
+								className="rounded mb-3"
 							/>
-						))}
-					</ButtonGroup>
-				</Row>
-				<Button
-					onClick={handleNextQuestion}
-					disabled={watch("options.target") ? false : true}
-				>
-					Next
-				</Button>
-			</Card.Body>
-		</Card>
+						)}
+						<h5>{question.content}</h5>
+					</div>
+					<Row>
+						<ButtonGroup className="play-quiz__options d-flex row g-3">
+							{options.map((option, idx) => (
+								<Controller
+									control={control}
+									name={`options.target`}
+									key={option.id}
+									render={({ field: { onChange, value } }) => (
+										<ToggleButton
+											type="radio"
+											id={`radio-${idx}`}
+											value={option.id}
+											checked={value === option.id}
+											onChange={(e) => onChange(e.target.value)}
+											className="col-5 mb-2 rounded-5"
+										>
+											{option.content}
+										</ToggleButton>
+									)}
+								/>
+							))}
+						</ButtonGroup>
+					</Row>
+				</Card.Body>
+			</Card>
+			<Button
+				onClick={handleNextQuestion}
+				disabled={watch("options.target") ? false : true}
+				className="d-block ms-auto mt-3 bg-gradient"
+			>
+				Next
+			</Button>
+		</div>
 	);
 };
 

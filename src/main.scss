@@ -1,0 +1,159 @@
+@import "../node_modules/bootstrap/scss/functions";
+
+$primary: #3d9eff;
+$secondary: #383e6e;
+$primary-text: #ffffff;
+$body-bg: #353a65;
+$body-color: #ffffff;
+$secondary-bg: #383e6e;
+$secondary-color: #b3b7ce;
+$gradient: linear-gradient(to right, #00f260, #0575e6);
+
+// Dropdowns
+$dropdown-bg: $secondary;
+$dropdown-color: $primary-text;
+$dropdown-padding-x: 1rem;
+$dropdown-link-hover-bg: $secondary;
+$dropdown-link-hover-color: $primary;
+$dropdown-link-active-color: $primary;
+$dropdown-item-padding-x: 1rem;
+
+// Inputs
+$input-bg: $secondary-bg;
+$form-floating-line-height: 1;
+$input-padding-x: 1.5rem;
+$input-padding-y: 1rem;
+$input-border-color: $secondary-bg;
+$input-focus-box-shadow: none;
+$input-focus-border-color: $primary;
+$input-border-radius: 16px;
+$form-file-button-bg: $primary;
+$input-group-addon-bg: lighten($secondary-bg, 6%);
+
+// Modal
+$btn-close-color: $primary-text;
+
+@import "../node_modules/bootstrap/scss/variables";
+
+// $theme-colors: map-merge(
+// 	$theme-colors,
+// 	(
+// 		"gradient": $gradient,
+// 	)
+// );
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+/* CSS RESET */
+
+* {
+	margin: 0;
+	padding: 0;
+	font: inherit;
+}
+
+body {
+	min-height: 100vh;
+	font-family: "Poppins", sans-serif;
+}
+
+img,
+picture,
+svg,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+.correct_answer {
+	color: lime;
+}
+
+.btn-primary {
+	@include button-variant(
+		$primary,
+		$primary,
+		$primary-text,
+		$hover-color: $primary-text
+	);
+}
+
+.nav__logo {
+	margin-left: 35rem;
+}
+
+.form__play-quiz {
+	font-size: 15px;
+}
+
+.dropdown {
+	// background-color: ;
+	height: 40px;
+}
+
+.card {
+	position: relative;
+
+	&__icons {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+}
+
+.quiz-list {
+	gap: 20px;
+}
+
+.play-quiz__options {
+	gap: 3rem;
+}
+
+.confetti {
+	pointer-events: none !important;
+}
+
+.question__card {
+	border: none;
+}
+
+.bg-gradient {
+	border: none !important;
+}
+
+.dropdown {
+	a {
+		color: $primary-text !important;
+	}
+}
+
+// .btn-options {
+// 	background: $secondary-bg;
+// 	color: $primary-text;
+// 	border: none;
+// }
+
+// .btn-options:active {
+// 	background: white !important;
+// }
+
+// .btn-options:checked,
+// .btn-options:focus,
+// .btn-options:active {
+// 	// background: #00d2ff; /* fallback for old browsers */
+// 	background: -webkit-linear-gradient(
+// 		to right,
+// 		#928dab,
+// 		#00d2ff
+// 	) !important; /* Chrome 10-25, Safari 5.1-6 */
+// 	background: linear-gradient(to right, #928dab, #00d2ff) !important;
+// }
+
+// .btn-options {
+// 	@include button-variant(
+// 		$gradient,
+// 		$primary,
+// 		$primary-text,
+// 		$hover-color: $primary-text
+// 	);
+// }

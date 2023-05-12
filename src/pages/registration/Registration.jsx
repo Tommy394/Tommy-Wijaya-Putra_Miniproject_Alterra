@@ -76,7 +76,7 @@ const Registration = () => {
 					Alredy have an account?{" "}
 					<a
 						className="text-primary"
-						onClick(() => navigate("/login"))
+						onClick={() => navigate("/login")}
 					>
 						Login Here
 					</a>

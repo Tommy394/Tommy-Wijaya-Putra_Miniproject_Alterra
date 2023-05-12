@@ -63,7 +63,7 @@ const InputForm = ({ quiz, index, handleClose }) => {
 
 			handleClose();
 			if (!isEditingQuiz) {
-				navigate("/question-list");
+				navigate("question-list");
 			} else {
 				setIsEiditingQuiz(false);
 			}

@@ -18,7 +18,7 @@ const QuizListItem = ({ quiz }) => {
 	const handleQuizClick = () => {
 		setIsEiditingQuiz(true);
 
-		navigate(`/question-list/${quiz.id}`);
+		navigate(`question-list/${quiz.id}`);
 	};
 
 	const handleDeleteQuiz = async () => {

@@ -71,7 +71,7 @@ const Login = () => {
 				Don&apos;t have an account?{" "}
 				<a
 					className="text-primary"
-					// onClick={() => navigate("/registration")}
+					onClick={() => navigate("/registration")}
 				>
 					Register Here
 				</a>

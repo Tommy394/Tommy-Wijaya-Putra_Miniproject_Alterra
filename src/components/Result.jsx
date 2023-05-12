@@ -34,7 +34,7 @@ const Result = ({ quizLength }) => {
 				aria-expanded="false"
 				aria-controls="collapseExample"
 			>
-				Preview Answers
+				Review Answers
 			</button>
 			<div
 				className="collapse"

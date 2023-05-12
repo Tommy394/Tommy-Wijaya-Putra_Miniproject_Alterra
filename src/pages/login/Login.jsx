@@ -70,9 +70,8 @@ const Login = () => {
 			<p className="mt-4">
 				Don&apos;t have an account?{" "}
 				<a
-					href="/registration"
 					className="text-primary"
-					// onClick={() => navigate("/registration")}
+					onClick={() => navigate("/registration")}
 				>
 					Register Here
 				</a>

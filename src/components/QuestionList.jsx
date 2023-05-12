@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router";
 import { useRecoilState } from "recoil";
 import { Button, Form, FloatingLabel } from "react-bootstrap";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Container from "react-bootstrap/Container";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";

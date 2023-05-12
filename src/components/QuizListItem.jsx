@@ -2,7 +2,7 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShare, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +12,6 @@ import { deleteQuizById } from "../utils/database-operation";
 
 const QuizListItem = ({ quiz }) => {
 	const navigate = useNavigate();
-	const location = useLocation();
 	const setIsEiditingQuiz = useSetRecoilState(isEditingQuizAtom);
 	const setQuizzesRequestId = useSetRecoilState(quizzesRequestIdAtom);
 
@@ -45,7 +44,7 @@ const QuizListItem = ({ quiz }) => {
 					</Card.Body>
 					<div className="card__icons">
 						<a
-							href={`https://wa.me/?text=This+user+invites+you+to+join+and+play+the+user%27s+created+quiz.+Come+and+prove+your+knowledge.+%0D%0A%0D%0Ahttp%3A%2F%2Flocalhost%3A5173%2Fplay-quiz%2F${quiz.id}`}
+							href={`https://wa.me/?text=This%20user%20invites%20you%20to%20join%20and%20play%20the%20user%27s%20created%20quiz.%20Come%20and%20prove%20your%20knowledge.%20%0A%0Ahttps%3A%2F%2Fkuizly.vercel.app%2Fplay-quiz%2F${quiz.id}`}
 							target="_blank"
 							rel="noreferrer"
 						>

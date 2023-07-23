@@ -27,14 +27,14 @@ const Result = ({ quizLength }) => {
 			<p className="text-center mt-5">Your score is</p>
 			<p className="text-center fs-1 mb-3">{score}%</p>
 			<button
-				className="btn btn-primary mb-3"
+				className="btn btn-primary mb-3 d-block mx-auto"
 				type="button"
 				data-bs-toggle="collapse"
 				data-bs-target="#collapseExample"
 				aria-expanded="false"
 				aria-controls="collapseExample"
 			>
-				Preview Answers
+				Review Answers
 			</button>
 			<div
 				className="collapse"

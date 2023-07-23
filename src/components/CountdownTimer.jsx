@@ -1,9 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-	MINUTE_IN_MILLISECONDS,
-	MINUTE_IN_SECONDS,
-	SECOND_IN_MILLISECONDS,
-} from "../constants";
 import { convertMillisecondsToMinutesAndSeconds } from "../utils/helpers";
 
 const CountdownTimer = ({

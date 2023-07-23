@@ -15,7 +15,7 @@ const Layout = () => {
 
 	const handleLogout = async () => {
 		await supabase.auth.signOut();
-		navigate("login");
+		navigate("/login");
 	};
 
 	return (

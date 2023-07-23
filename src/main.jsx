@@ -33,7 +33,7 @@ const router = createBrowserRouter([
 						data: { session },
 					} = await supabase.auth.getSession();
 					if (!session) {
-						return redirect("login");
+						return redirect("/login");
 					}
 					return null;
 				},
@@ -47,15 +47,15 @@ const router = createBrowserRouter([
 				element: <InputForm />,
 			},
 			{
-				path: "question-list",
+				path: "/question-list",
 				element: <QuestionList />,
 			},
 			{
-				path: "question-list/:id",
+				path: "/question-list/:id",
 				element: <QuestionList />,
 			},
 			{
-				path: "play-quiz/:id",
+				path: "/play-quiz/:id",
 				element: (
 					<Suspense fallback={<Loading />}>
 						<Quiz />
@@ -65,7 +65,7 @@ const router = createBrowserRouter([
 		],
 	},
 	{
-		path: "login",
+		path: "/login",
 		element: <Login />,
 		loader: async () => {
 			const {
@@ -78,7 +78,7 @@ const router = createBrowserRouter([
 		},
 	},
 	{
-		path: "registration",
+		path: "/registration",
 		element: <Registration />,
 	},
 ]);

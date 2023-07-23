@@ -47,84 +47,88 @@ $btn-close-color: $primary-text;
 /* CSS RESET */
 
 * {
-	margin: 0;
-	padding: 0;
-	font: inherit;
+  margin: 0;
+  padding: 0;
+  font: inherit;
 }
 
 body {
-	min-height: 100vh;
-	font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
 }
 
 img,
 picture,
 svg,
 video {
-	display: block;
-	max-width: 100%;
+  display: block;
+  max-width: 100%;
 }
 
 .correct_answer {
-	color: lime;
+  color: lime;
 }
 
 .btn-primary {
-	@include button-variant(
-		$primary,
-		$primary,
-		$primary-text,
-		$hover-color: $primary-text
-	);
+  @include button-variant(
+    $primary,
+    $primary,
+    $primary-text,
+    $hover-color: $primary-text
+  );
 }
 
 .nav__logo {
-	margin-left: 35rem;
+  margin-left: 35rem;
 }
 
 .form__play-quiz {
-	font-size: 15px;
+  font-size: 15px;
 }
 
 .dropdown {
-	// background-color: ;
-	height: 40px;
+  // background-color: ;
+  height: 40px;
 }
 
 .card {
-	position: relative;
+  position: relative;
 
-	&__icons {
-		position: absolute;
-		top: 10px;
-		right: 10px;
-	}
+  &__icons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 }
 
 .quiz-list {
-	gap: 20px;
+  gap: 20px;
 }
 
 .play-quiz__options {
-	gap: 3rem;
+  gap: 3rem;
 }
 
 .confetti {
-	pointer-events: none !important;
+  pointer-events: none !important;
 }
 
 .question__card {
-	border: none;
+  border: none;
 }
 
 .bg-gradient {
-	border: none !important;
+  border: none !important;
 }
 
 .dropdown {
-	a {
-		color: $primary-text !important;
-	}
+  a {
+    color: $primary-text !important;
+  }
+}
+
+.btn-options {
+  max-width: 357px;
 }
 
 // .btn-options {

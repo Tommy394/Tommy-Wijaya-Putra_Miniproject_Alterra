@@ -43,9 +43,6 @@ const Login = () => {
 						placeholder="Enter email"
 						ref={emailRef}
 					/>
-					<Form.Text className="text-muted">
-						We&apos;ll never share your email with anyone else.
-					</Form.Text>
 				</Form.Group>
 
 				<Form.Group
